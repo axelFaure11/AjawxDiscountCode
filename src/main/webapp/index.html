@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <style>
+				.table
+				{
+					display:table;
+					border-collapse:separate;
+					border-spacing:2px;
+				}
+				.thead
+				{
+					display:table-header-group;
+					color:white;
+					font-weight:bold;
+					background-color:grey;
+				}
+				.tbody
+				{
+					display:table-row-group;
+				}
+				.tr
+				{
+					display:table-row;
+				}
+				.td
+				{
+					display:table-cell;
+					border:1px solid black;
+					padding:1px;
+				}			
+    </style>		
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>Saisie d'un taux de remise</title>
+    </head>
+    <body>
+        <h1>Edition des taux de remise</h1>
+        <form method='GET'>
+            Code : <input class="c" name="code" size="1" maxlength="1" pattern="[A-Z]{1}+" title="Une lettre en MAJUSCULES"><br/>
+            Taux : <input class="r" name="rate" type="number" step="0.01" min="0.0" max="99.99" size="5"><br/>
+            <input type="hidden" name="action" value="ADD">
+            <input class="add" type="submit" value="Ajouter">
+	</form>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+                                <script>
+                                    $(document).ready(// Exécuté à la fin du chargement de la page
+                                        function () {
+                                            $("#add").click(doRequest);
+                                            $("#del").click(doRequest);
+                                        }
+                                    );
+                                    
+                                    
+                                    function showError(xhr, status, message) {
+                                        $("#err").html("Erreur: " + status + " : " + message);
+                                    }
+                                    
+                                    function doRequest(){
+                                        $.ajax({
+                                                url: "AjaxListeCode",
+                                                data : { "code" : $(c), "rate" : $(r), "action" : $(add) },
+                                                datatype : "json",
+                                                error: showError,
+                                                success: 
+                                                    function(result){
+                                                        $("#table").empty();
+                                                        $.jsontotable(result.records, {id: "#table", header: true});
+                                                    }
+                                               });
+                                    }
+                                </script>
+        <div class="table"> </div>
+        
+    </body>
+</html>
