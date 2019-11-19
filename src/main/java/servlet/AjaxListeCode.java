@@ -42,9 +42,12 @@ public class AjaxListeCode extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("application/json;charset=UTF-8");
+        
+        System.out.println("Servlet called");
+        
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            String code = request.getParameter("discount_code");
+            String code = request.getParameter("code");
             String rate = request.getParameter("rate");
             String action = request.getParameter("action");
             DAODiscount_Code daodc = new DAODiscount_Code(DataSourceFactory.getDataSource());
@@ -67,7 +70,8 @@ public class AjaxListeCode extends HttpServlet {
 		}
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String gsonData = gson.toJson(resultat);
-            out.println(resultat);
+            
+            out.println(gsonData);
         }
     }
 

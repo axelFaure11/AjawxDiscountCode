@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    <head>
     <style>
 				.table
 				{
@@ -29,15 +30,14 @@
 					padding:1px;
 				}			
     </style>		
-    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Saisie d'un taux de remise</title>
     </head>
     <body>
         <h1>Edition des taux de remise</h1>
         <form method='GET'>
-            Code : <input class="c" name="code" size="1" maxlength="1" pattern="[A-Z]{1}+" title="Une lettre en MAJUSCULES"><br/>
-            Taux : <input class="r" name="rate" type="number" step="0.01" min="0.0" max="99.99" size="5"><br/>
+            Code : <input class="code" name="code" size="1" maxlength="1" pattern="[A-Z]{1}+" title="Une lettre en MAJUSCULES"><br/>
+            Taux : <input class="rate" name="rate" type="number" step="0.01" min="0.0" max="99.99"><br/>
             <input type="hidden" name="action" value="ADD">
             <input class="add" type="submit" value="Ajouter">
 	</form>
@@ -45,8 +45,9 @@
                                 <script>
                                     $(document).ready(// Exécuté à la fin du chargement de la page
                                         function () {
-                                            $("#add").click(doRequest);
-                                            $("#del").click(doRequest);
+                                            console.log("Document loaded");
+                                            $(".add").click(doRequest);
+                                            $(".del").click(doRequest);
                                         }
                                     );
                                     
@@ -56,20 +57,36 @@
                                     }
                                     
                                     function doRequest(){
+                                        console.log("Request received with");
+                                        console.log("Code = " + $("input[name = 'code']").attr('value'));
+                                        console.log("Rate = " + $("input[name = 'rate']").attr('value'));
+                                        console.log("Action = " + $("input[name = 'action']").attr('value'));
                                         $.ajax({
                                                 url: "AjaxListeCode",
-                                                data : { "code" : $(c), "rate" : $(r), "action" : $(add) },
+                                                data : { "code" : $("input[name = 'code']").attr('value'),
+                                                         "rate" : $("input[name = 'rate']").attr('value'),
+                                                         "action" : $("input[name = 'action']").attr('value')},
                                                 datatype : "json",
                                                 error: showError,
                                                 success: 
                                                     function(result){
-                                                        $("#table").empty();
-                                                        $.jsontotable(result.records, {id: "#table", header: true});
+                                                        console.log("Request successful");
+                                                        var tab = $(".table");
+                                                        tab.empty();
+                                                        tab.append("<tbody>");
+                                                        $.each(result, function(i, c){
+                                                            tab.append("<tr>");
+                                                            tab.append(
+                                                                $('<td>').text(c.code),
+                                                                $('<td>').text(c.rate));
+                                                            tab.append("</tr>");
+                                                        });
+                                                        tab.append("</tbody>");
                                                     }
                                                });
                                     }
                                 </script>
-        <div class="table"> </div>
+        <table class="table"> </table>
         
     </body>
 </html>
